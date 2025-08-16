@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "dev-node": "vite",
+    "dev": "bunx --bun vite",
+    "build-node": "vite build",
+    "build": "bunx --bun vite build",
+    "build:dev-node": "vite build --mode development",
+    "build:dev": "bunx --bun vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },

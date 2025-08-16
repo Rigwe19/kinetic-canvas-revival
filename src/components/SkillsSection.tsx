@@ -7,17 +7,17 @@ const SkillsSection = () => {
       skills: [
         { name: "React", level: 95, color: "from-blue-500 to-cyan-500" },
         { name: "Vue.js", level: 90, color: "from-green-500 to-teal-500" },
-        { name: "TypeScript", level: 85, color: "from-blue-600 to-blue-400" },
-        { name: "Next.js", level: 88, color: "from-gray-700 to-gray-500" },
+        { name: "Angular", level: 85, color: "from-blue-600 to-blue-400" },
+        { name: "Svelte", level: 88, color: "from-yellow-700 to-red-500" },
       ]
     },
     {
       title: "Backend",
       skills: [
         { name: "Laravel", level: 98, color: "from-red-500 to-orange-500" },
-        { name: "Node.js", level: 92, color: "from-green-600 to-green-400" },
-        { name: "Express.js", level: 90, color: "from-gray-600 to-gray-400" },
-        { name: "PHP", level: 95, color: "from-purple-600 to-purple-400" },
+        { name: "adonis.js", level: 92, color: "from-green-600 to-green-400" },
+        { name: "Ts.Ed", level: 90, color: "from-white to-orange-400" },
+        { name: "Express", level: 95, color: "from-purple-600 to-purple-400" },
       ]
     },
     {
