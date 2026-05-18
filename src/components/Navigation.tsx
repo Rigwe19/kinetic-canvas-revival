@@ -1,137 +1,158 @@
-import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'home',     label: 'Home' },
+    { id: 'work',     label: 'Work' },
+    { id: 'mobile-apps', label: 'Mobile' },
+    { id: 'services', label: 'Services' },
+    { id: 'skills',   label: 'Skills' },
+    { id: 'contact',  label: 'Contact' },
   ];
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(sectionId);
-    }
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setActiveSection(id);
+    setMobileOpen(false);
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = navItems.map(item => item.id);
-      const scrollPosition = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section && scrollPosition >= section.offsetTop) {
-          setActiveSection(sections[i]);
-          break;
-        }
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const pos = window.scrollY + 120;
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        const el = document.getElementById(navItems[i].id);
+        if (el && pos >= el.offsetTop) { setActiveSection(navItems[i].id); break; }
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.div
-            className="text-2xl font-bold text-gradient"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          >
-            Reinhard
-          </motion.div>
+    <>
+      <motion.nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 h-16"
+        style={{
+          background: scrolled ? 'rgba(14,13,11,0.95)' : 'transparent',
+          borderBottom: scrolled ? '1px solid #262220' : '1px solid transparent',
+          backdropFilter: scrolled ? 'blur(12px)' : 'none',
+          transition: 'background 0.3s, border-color 0.3s',
+        }}
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      >
+        {/* Logo */}
+        <button
+          onClick={() => scrollTo('home')}
+          style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--ink)', letterSpacing: '-0.02em', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          Reinhard
+        </button>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 ${
-                  activeSection === item.id
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ y: -2 }}
+        {/* Desktop links */}
+        <ul className="hidden md:flex items-center gap-8" style={{ listStyle: 'none' }}>
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => scrollTo(item.id)}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: activeSection === item.id ? 'var(--ink)' : 'var(--ink3)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s',
+                  padding: 0,
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--ink)')}
+                onMouseLeave={e => (e.currentTarget.style.color = activeSection === item.id ? 'var(--ink)' : 'var(--ink3)')}
               >
                 {item.label}
-                {activeSection === item.id && (
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                    layoutId="activeSection"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                
-                {/* Hover effect */}
-                <motion.div
-                  className="absolute inset-0 bg-primary/10 rounded-lg -z-10"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                />
-              </motion.button>
-            ))}
-          </div>
+              </button>
+            </li>
+          ))}
+        </ul>
 
-          {/* Hire Me Button */}
-          <motion.button
-            className="hidden md:block px-6 py-2 bg-primary text-primary-foreground rounded-full font-medium glow-primary transition-all duration-300 hover:scale-105"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            whileHover={{ 
-              scale: 1.1,
-              boxShadow: "0 0 30px hsl(195 100% 50% / 0.6)"
+        {/* CTA */}
+        <div className="hidden md:flex items-center gap-4">
+          <button
+            onClick={() => scrollTo('contact')}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              padding: '8px 20px',
+              border: '1px solid var(--border-c)',
+              color: 'var(--ink)',
+              background: 'transparent',
+              cursor: 'pointer',
+              transition: 'background 0.2s, border-color 0.2s',
             }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection('contact')}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--ink)'; e.currentTarget.style.color = 'var(--bg)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink)'; }}
           >
             Hire Me →
-          </motion.button>
-
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden p-2 text-foreground"
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </motion.button>
+          </button>
         </div>
-      </div>
-    </motion.nav>
+
+        {/* Mobile toggle */}
+        <button
+          className="md:hidden"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          style={{ background: 'none', border: 'none', color: 'var(--ink)', cursor: 'pointer' }}
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </motion.nav>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 flex flex-col justify-center items-center gap-8"
+            style={{ background: 'var(--bg)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {navItems.map((item, i) => (
+              <motion.button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '2rem',
+                  letterSpacing: '-0.02em',
+                  color: 'var(--ink)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.07 }}
+              >
+                {item.label}
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

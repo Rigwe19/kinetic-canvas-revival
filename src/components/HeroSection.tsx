@@ -1,205 +1,119 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 
 const HeroSection = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2,
-      },
-    },
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut" as const,
-      },
-    },
-  };
+  const fadeUp = (delay = 0) => ({
+    initial: { opacity: 0, y: 28 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] as any },
+  });
 
-  const scrollToProjects = () => {
-    const projectsSection = document.getElementById('projects');
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const stats = [
+    { num: '8+',   label: 'Years experience' },
+    { num: '50+',  label: 'Projects shipped' },
+    { num: '12+',  label: 'Technologies' },
+    { num: '100%', label: 'Client satisfaction' },
+  ];
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center pt-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          className="grid lg:grid-cols-2 gap-12 items-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Left Content */}
-          <div className="space-y-8">
-            <motion.div variants={itemVariants} className="space-y-2">
-              <motion.h2
-                className="text-lg font-medium text-muted-foreground"
-                variants={itemVariants}
-              >
-                Hi, I'm
-              </motion.h2>
-              <motion.h1
-                className="text-6xl lg:text-7xl font-bold text-gradient leading-tight"
-                variants={itemVariants}
-              >
-                Reinhard
-                <motion.span
-                  className="inline-block ml-2"
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                >
-                  _
-                </motion.span>
-              </motion.h1>
-            </motion.div>
+    <section
+      id="home"
+      style={{
+        minHeight: '100vh',
+        paddingTop: 'calc(4rem + 64px)',
+        paddingBottom: '5rem',
+        paddingLeft: 'clamp(1.5rem, 6vw, 5rem)',
+        paddingRight: 'clamp(1.5rem, 6vw, 5rem)',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
+        gap: '4rem',
+        alignItems: 'center',
+      }}
+    >
+      {/* Left */}
+      <div>
+        <motion.div {...fadeUp(0.1)} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1.5rem' }}>
+          <span style={{ width: 24, height: 1, background: 'var(--ink3)', display: 'inline-block' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', color: 'var(--ink3)', textTransform: 'uppercase' }}>
+            Fullstack Web Developer
+          </span>
+        </motion.div>
 
-            <motion.p
-              className="text-xl text-muted-foreground leading-relaxed max-w-2xl"
-              variants={itemVariants}
-            >
-              I am a <span className="text-primary font-semibold">fullstack web developer</span> with 8+ years of experience in PHP, Laravel, JavaScript, React, Vue, and Node.js. I create{' '}
-              <span className="text-accent font-semibold">innovative digital experiences</span> and scalable applications.
-            </motion.p>
+        {/* Availability */}
+        <motion.div {...fadeUp(0.15)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: '1.5rem', padding: '6px 14px', border: '1px solid var(--border-c)', background: 'var(--bg2)' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4caf7d', flexShrink: 0 }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.08em', color: 'var(--ink2)' }}>Available for new projects</span>
+        </motion.div>
 
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4"
-              variants={itemVariants}
-            >
-              <Button
-                onClick={scrollToContact}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full font-semibold glow-primary transition-all duration-300 hover:scale-105"
-              >
-                Work With Me
-              </Button>
-              <Button
-                variant="outline"
-                onClick={scrollToProjects}
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105"
-              >
-                See My Work
-              </Button>
-            </motion.div>
+        <motion.h1 {...fadeUp(0.2)} style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em', color: 'var(--ink)', marginBottom: '1.5rem' }}>
+          Building the<br /><em style={{ color: 'var(--ink2)' }}>web</em> that<br />works.
+        </motion.h1>
 
-            {/* Animated Stats */}
-            <motion.div
-              className="grid grid-cols-3 gap-8 pt-8"
-              variants={itemVariants}
-            >
-              <div className="text-center">
-                <motion.div
-                  className="text-3xl font-bold text-primary"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 2, duration: 1 }}
-                >
-                  8+
-                </motion.div>
-                <div className="text-sm text-muted-foreground">Years Experience</div>
-              </div>
-              <div className="text-center">
-                <motion.div
-                  className="text-3xl font-bold text-accent"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 2.2, duration: 1 }}
-                >
-                  50+
-                </motion.div>
-                <div className="text-sm text-muted-foreground">Projects Done</div>
-              </div>
-              <div className="text-center">
-                <motion.div
-                  className="text-3xl font-bold text-primary"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 2.4, duration: 1 }}
-                >
-                  100%
-                </motion.div>
-                <div className="text-sm text-muted-foreground">Client Satisfaction</div>
-              </div>
-            </motion.div>
-          </div>
+        <motion.p {...fadeUp(0.3)} style={{ fontSize: 17, color: 'var(--ink2)', maxWidth: 480, lineHeight: 1.75, marginBottom: '2.5rem' }}>
+          I'm Reinhard — a fullstack developer with{' '}
+          <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>8+ years</strong> of experience crafting
+          robust applications with{' '}
+          <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>PHP, Laravel, React, Vue.js</strong> and{' '}
+          <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>Node.js</strong>. From concept to deployment.
+        </motion.p>
 
-          {/* Right Content - Profile Image */}
-          <motion.div
-            className="relative"
-            variants={itemVariants}
+        <motion.div {...fadeUp(0.4)} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => scrollTo('work')}
+            style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase',
+              padding: '14px 28px', background: 'var(--primary)', color: 'var(--primary-foreground)', border: 'none', cursor: 'pointer', transition: 'opacity 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
-            <motion.div
-              className="relative w-80 h-80 mx-auto lg:w-96 lg:h-96"
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {/* Animated Border */}
-              <motion.div
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-accent to-primary p-1 animate-morph"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <div className="w-full h-full rounded-full bg-background"></div>
-              </motion.div>
-
-              {/* Profile Image Placeholder */}
-              <motion.div
-                className="absolute inset-2 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div
-                  className="w-24 h-24 bg-primary rounded-full opacity-30"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center text-6xl text-primary/60"
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                >
-                  👨‍💻
-                </motion.div>
-              </motion.div>
-
-              {/* Floating Elements */}
-              <motion.div
-                className="absolute -top-4 -right-4 w-8 h-8 bg-accent rounded-full glow-accent"
-                animate={{ 
-                  scale: [1, 1.3, 1],
-                  rotate: [0, 180, 360]
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-              />
-              <motion.div
-                className="absolute -bottom-4 -left-4 w-6 h-6 bg-primary rounded-full glow-primary"
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  rotate: [360, 180, 0]
-                }}
-                transition={{ duration: 6, repeat: Infinity }}
-              />
-            </motion.div>
-          </motion.div>
+            View My Work
+          </button>
+          <button
+            onClick={() => scrollTo('contact')}
+            style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase',
+              padding: '14px 28px', background: 'transparent', color: 'var(--ink)', border: '1px solid var(--border-c)', cursor: 'pointer', transition: 'border-color 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--ink)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-c)'}
+          >
+            Get In Touch
+          </button>
         </motion.div>
       </div>
+
+      {/* Right — stats grid */}
+      <motion.div
+        {...fadeUp(0.35)}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '1px',
+          background: 'var(--border-c)',
+          border: '1px solid var(--border-c)',
+        }}
+      >
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            style={{ background: 'var(--bg2)', padding: '2rem', textAlign: 'center' }}
+          >
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', lineHeight: 1, letterSpacing: '-0.04em', color: 'var(--ink)', marginBottom: '0.4rem' }}>
+              {s.num}
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em', color: 'var(--ink3)', textTransform: 'uppercase' }}>
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </motion.div>
     </section>
   );
 };

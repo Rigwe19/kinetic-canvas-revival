@@ -1,73 +1,71 @@
-# Welcome to your Lovable project
+# Reinhard — Fullstack Developer Portfolio
 
-## Project info
+A high-performance, editorial-style developer portfolio built with React, Vite, and Tailwind CSS. This project showcases technical expertise in full-stack development, mobile application design, and system architecture.
 
-**URL**: https://lovable.dev/projects/1f010bf8-b2b4-4801-a854-996d7e79b281
+## 🚀 Tech Stack
 
-## How can I edit this code?
+- **Framework:** [React 18](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [Vanilla CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/) & [GSAP](https://gsap.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **UI Components:** Custom components based on [Radix UI](https://www.radix-ui.com/)
+- **State Management:** [TanStack Query (React Query)](https://tanstack.com/query/latest)
+- **Forms:** [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
 
-There are several ways of editing your application.
+## ✨ Key Features
 
-**Use Lovable**
+- **Editorial Design:** A clean, typography-focused layout inspired by modern design principles.
+- **Dynamic Projects Section:** Interactive project showcases with responsive layouts.
+- **Service Integration:** Detailed sections for Web, API, and Mobile app development.
+- **Contact System:** Integrated email inquiry system using a custom React hook (`useSendEmail`).
+- **Performance Optimized:** Built for speed with Vite and minimal external dependencies.
+- **Mobile Responsive:** Fluid design that works perfectly across all screen sizes.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1f010bf8-b2b4-4801-a854-996d7e79b281) and start prompting.
+## 📁 Project Structure
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```text
+src/
+├── components/     # Reusable UI components
+│   ├── ui/        # Atomic UI elements (Shadcn/Radix)
+├── hooks/         # Custom React hooks (Email, Toast, etc.)
+├── lib/           # Utility functions
+├── pages/         # Main page views
+└── App.tsx        # Main application entry
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Getting Started
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
 
-**Use GitHub Codespaces**
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [npm](https://www.npmjs.com/) or [bun](https://bun.sh/)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Installation
 
-## What technologies are used for this project?
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/reinhard-portfolio/portfolio.git
+   ```
 
-This project is built with:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## How can I deploy this project?
+4. Build for production:
+   ```bash
+   npm run build
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/1f010bf8-b2b4-4801-a854-996d7e79b281) and click on Share -> Publish.
+## 📄 License
 
-## Can I connect a custom domain to my Lovable project?
+This project is private and intended for personal use.
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+Built with ❤️ by [Igwe Reinhard Chigozie](https://reinhard.name.ng)

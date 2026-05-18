@@ -1,200 +1,226 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
-const ProjectsSection = () => {
-  const projects = [
-    {
-      title: "Online Hospital Management System",
-      description: "Complete hospital management solution from drugs to patients with Laravel Vue3 architecture",
-      tech: ["Laravel", "Vue3", "MySQL", "API"],
-      gradient: "from-blue-500/20 to-purple-500/20",
-      image: "🏥"
-    },
-    {
-      title: "Multi-Vendor E-commerce",
-      description: "Scalable multi-vendor e-commerce platform with mobile app support",
-      tech: ["Ionic", "React", "Laravel", "Payment Integration"],
-      gradient: "from-green-500/20 to-blue-500/20",
-      image: "🛒"
-    },
-    {
-      title: "Online Blog Platform",
-      description: "Modern blog platform with real-time features and social interactions",
-      tech: ["Laravel", "React", "Jetstream", "InertiaJS"],
-      gradient: "from-purple-500/20 to-pink-500/20",
-      image: "📝"
-    },
-    {
-      title: "Factory Management System",
-      description: "Comprehensive factory operations management with IoT integration",
-      tech: ["Ionic", "React", "Laravel", "IoT"],
-      gradient: "from-orange-500/20 to-red-500/20",
-      image: "🏭"
-    },
-    {
-      title: "Real Estate Platform",
-      description: "Property management and listing platform with virtual tours",
-      tech: ["Next.js", "Node.js", "MongoDB", "3D Visualization"],
-      gradient: "from-teal-500/20 to-blue-500/20",
-      image: "🏠"
-    },
-    {
-      title: "Learning Management System",
-      description: "Educational platform with video streaming and progress tracking",
-      tech: ["React", "Express.js", "PostgreSQL", "WebRTC"],
-      gradient: "from-indigo-500/20 to-purple-500/20",
-      image: "🎓"
-    }
-  ];
+const projects = [
+  {
+    name: 'All Ages by Redson',
+    url: 'https://allagesbyredson.com',
+    tech: ['PHP', 'Laravel', 'Inertia.js', 'React'],
+    desc: 'A full-featured platform built with Laravel + Inertia.js + React — seamless SPA navigation with server-side rendering benefits.',
+  },
+  {
+    name: 'Frontlett',
+    url: 'https://frontlett.com',
+    tech: ['PHP', 'Laravel', 'React Router v7'],
+    desc: 'Staff sharing platform connecting businesses with flexible workforce solutions. Laravel backend, React Router v7 frontend.',
+  },
+  {
+    name: 'Where Eagles Dwell',
+    url: 'https://whereeaglesdwell.com',
+    tech: ['React'],
+    desc: 'A beautifully crafted React application with a focus on performance and user experience.',
+  },
+  {
+    name: 'Bammy Bestowed',
+    url: 'https://bammbestowed.com',
+    tech: ['React'],
+    desc: 'Polished React application with modern component architecture and optimised performance.',
+  },
+  {
+    name: 'Wanodu Barter',
+    url: 'https://wanodu.com',
+    tech: ['Laravel', 'React'],
+    desc: 'A peer-to-peer barter exchange marketplace built on Laravel + React with secure trading flows.',
+  },
+  {
+    name: 'SincPartners',
+    url: 'https://sincpartners.com',
+    tech: ['React'],
+    desc: 'Professional corporate web presence showcasing partnership offerings with clean, conversion-focused design.',
+  },
+  {
+    name: 'HostUll',
+    url: 'https://hostull.com',
+    tech: ['PHP', 'Laravel', 'React'],
+    desc: 'Web hosting platform with PHP/Laravel backend and React frontend — domain management, billing, and hosting at scale.',
+  },
+  {
+    name: 'Ullweb',
+    url: 'https://ullweb.com.ng',
+    tech: ['React'],
+    desc: 'Nigerian-based digital agency platform with a localized approach and strong performance focus.',
+  },
+  {
+    name: 'Ideas Global',
+    url: 'https://ideasglobal.org',
+    tech: ['React'],
+    desc: 'iDEAS (Initiative for Development Empowerment and Social Action) builds lasting impact through education, inclusion, and collective action inspired by the UN Sustainable Development Goals.'
+  },
+  {
+    name: 'Vive Cafe',
+    url: 'https://vivecafe.com.ng',
+    tech: ['React'],
+    desc: 'Experience the perfect harmony of premium coffee, artisanal cuisine, and professional ambiance in the heart of downtown. Your perfect spot for meetings, dates, and everything in between.'
+  },
+  {
+    name: 'Space trxform',
+    url: 'https://spacetrxform.com',
+    tech: ['React'],
+    desc: 'At Spacetrxform, We design spaces that blend creativity, engineering, and culture to shape environments that inspire and empower communities.'
+  },
+  {
+    name: 'Dallas Ville',
+    url: 'https://dallasville.com',
+    tech: ['React'],
+    desc: 'Dallasville is a leading real estate company dedicated to helping individuals and families find their perfect homes.'
+  }
+];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+// Uses thum.io — free, no API key, just works
+// const thumbUrl = (url: string) =>
+//   `https://image.thum.io/get/width/800/crop/500/allowJPG/noanimate/${url}`;
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const,
-      },
-    },
-  };
+  // Using Microlink which is more robust for JS-heavy sites
+  const thumbUrl = (url: string) =>
+  `https://api.microlink.io?url=${url}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`;
+const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
+  const [imgState, setImgState] = useState<'loading' | 'loaded' | 'error'>('loading');
 
   return (
-    <section id="projects" className="py-20 px-6">
-      <div className="container mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      style={{
+        background: 'var(--bg2)',
+        border: '1px solid var(--border-c)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'border-color 0.25s',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--ink3)')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-c)')}
+    >
+      {/* Thumbnail */}
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden', background: 'var(--bg3)', borderBottom: '1px solid var(--border-c)' }}>
+        {imgState === 'loading' && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 24, height: 24, border: '2px solid var(--border-c)', borderTopColor: 'var(--ink3)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          </div>
+        )}
+        {imgState === 'error' && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.08em', color: 'var(--ink3)', textTransform: 'uppercase' }}>
+              {project.url.replace('https://', '')}
+            </span>
+          </div>
+        )}
+        <img
+          src={thumbUrl(project.url)}
+          alt={project.name}
+          loading="lazy"
+          style={{
+            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+            opacity: imgState === 'loaded' ? 1 : 0,
+            transition: 'opacity 0.4s ease, transform 0.4s ease',
+          }}
+          onLoad={() => setImgState('loaded')}
+          onError={() => setImgState('error')}
+        />
+        {/* Overlay on hover */}
+        <div
+          className="thumb-overlay"
+          style={{
+            position: 'absolute', inset: 0,
+            background: 'rgba(14,13,11,0.6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            opacity: 0, transition: 'opacity 0.25s',
+          }}
         >
-          <h2 className="text-4xl lg:text-5xl font-bold text-gradient mb-4">
-            Apps I've Built
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            I have successfully built the following applications, showcasing expertise across different technologies and domains
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              variants={cardVariants}
-              whileHover={{ y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="h-full bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 group overflow-hidden">
-                <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
-                
-                <CardHeader className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <motion.div
-                      className="text-4xl"
-                      whileHover={{ scale: 1.2, rotate: 10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {project.image}
-                    </motion.div>
-                    <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      >
-                        <Github className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">
-                    {project.title}
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <CardDescription className="text-muted-foreground leading-relaxed">
-                    {project.description}
-                  </CardDescription>
-
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
-                      <motion.span
-                        key={tech}
-                        className="px-3 py-1 text-xs font-medium bg-secondary/50 text-secondary-foreground rounded-full"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {tech}
-                      </motion.span>
-                    ))}
-                  </div>
-
-                  <motion.div
-                    className="w-full h-1 bg-secondary rounded-full overflow-hidden"
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-primary to-accent"
-                      initial={{ x: "-100%" }}
-                      whileInView={{ x: "0%" }}
-                      transition={{ duration: 1, delay: index * 0.1 + 0.5 }}
-                      viewport={{ once: true }}
-                    />
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <Button
-            className="px-8 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold glow-primary transition-all duration-300 hover:scale-105"
-            onClick={() => window.open('https://github.com', '_blank')}
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: 'var(--ink)', padding: '10px 20px', border: '1px solid var(--ink)', textDecoration: 'none',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}
           >
-            View All Projects on GitHub
-            <Github className="ml-2 w-4 h-4" />
-          </Button>
-        </motion.div>
+            Visit Site <ExternalLink size={12} />
+          </a>
+        </div>
       </div>
-    </section>
+
+      {/* Body */}
+      <div style={{ padding: '1.25rem 1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {project.tech.map(t => (
+            <span
+              key={t}
+              style={{
+                fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase',
+                padding: '3px 8px', border: '1px solid var(--border-c)', color: 'var(--ink3)',
+              }}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', letterSpacing: '-0.02em', color: 'var(--ink)', lineHeight: 1.2 }}>
+          {project.name}
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--ink2)', lineHeight: 1.65, flex: 1 }}>{project.desc}</p>
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase',
+            color: 'var(--ink)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6,
+            borderBottom: '1px solid var(--border-c)', paddingBottom: 2, width: 'fit-content', transition: 'border-color 0.2s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--ink)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-c)'}
+        >
+          Visit site →
+        </a>
+      </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .thumb-overlay { opacity: 0 !important; }
+        *:hover > .thumb-overlay { opacity: 1 !important; }
+      `}</style>
+    </motion.div>
   );
 };
+
+const ProjectsSection = () => (
+  <section id="work" style={{ maxWidth: '1400px', margin: '0 auto', padding: '6rem clamp(1.5rem, 6vw, 5rem)' }}>
+    {/* Header */}
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-c)' }}>
+      <div>
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '0.4rem' }}>
+          Selected work
+        </motion.div>
+        <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', color: 'var(--ink)' }}>
+          Live Projects
+        </motion.h2>
+      </div>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink3)', letterSpacing: '0.08em' }}>08 projects</span>
+    </div>
+
+    {/* Grid */}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 340px), 1fr))', gap: '1px', background: 'var(--border-c)' }}>
+      {projects.map((p, i) => (
+        <ProjectCard key={p.url} project={p} index={i} />
+      ))}
+    </div>
+  </section>
+);
 
 export default ProjectsSection;

@@ -1,211 +1,104 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const SkillsSection = () => {
-  const skillCategories = [
-    {
-      title: "Frontend",
-      skills: [
-        { name: "React", level: 95, color: "from-blue-500 to-cyan-500" },
-        { name: "Vue.js", level: 90, color: "from-green-500 to-teal-500" },
-        { name: "Angular", level: 85, color: "from-blue-600 to-blue-400" },
-        { name: "Svelte", level: 88, color: "from-yellow-700 to-red-500" },
-      ]
-    },
-    {
-      title: "Backend",
-      skills: [
-        { name: "Laravel", level: 98, color: "from-red-500 to-orange-500" },
-        { name: "adonis.js", level: 92, color: "from-green-600 to-green-400" },
-        { name: "Ts.Ed", level: 90, color: "from-white to-orange-400" },
-        { name: "Express", level: 95, color: "from-purple-600 to-purple-400" },
-      ]
-    },
-    {
-      title: "Mobile & Desktop",
-      skills: [
-        { name: "React Native", level: 85, color: "from-blue-500 to-indigo-500" },
-        { name: "Ionic", level: 88, color: "from-blue-400 to-blue-600" },
-        { name: "Electron", level: 82, color: "from-teal-500 to-cyan-500" },
-        { name: "Flutter", level: 75, color: "from-blue-400 to-blue-700" },
-      ]
-    },
-    {
-      title: "Database & Tools",
-      skills: [
-        { name: "MySQL", level: 93, color: "from-orange-500 to-yellow-500" },
-        { name: "PostgreSQL", level: 88, color: "from-blue-600 to-indigo-600" },
-        { name: "MongoDB", level: 85, color: "from-green-600 to-green-800" },
-        { name: "Docker", level: 80, color: "from-blue-500 to-blue-700" },
-      ]
-    }
-  ];
+const groups = [
+  {
+    title: 'Backend & Frameworks',
+    skills: [
+      { name: 'Laravel / PHP', pct: 98 },
+      { name: 'Inertia.js', pct: 95 },
+      { name: 'Adonis.js', pct: 92 },
+      { name: 'Ts.Ed / Express.js', pct: 90 },
+      { name: 'Node.js', pct: 88 },
+      { name: 'MySQL / PostgreSQL', pct: 93 },
+      { name: 'MongoDB', pct: 82 },
+    ],
+  },
+  {
+    title: 'Frontend & Mobile',
+    skills: [
+      { name: 'React / Next.js', pct: 95 },
+      { name: 'Vue.js / Nuxt', pct: 90 },
+      { name: 'TypeScript', pct: 88 },
+      { name: 'React Native', pct: 85 },
+      { name: 'Ionic', pct: 88 },
+      { name: 'Angular / Svelte', pct: 82 },
+      { name: 'Docker / CI/CD', pct: 80 },
+    ],
+  },
+];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+const SkillBar = ({ name, pct, delay }: { name: string; pct: number; delay: number }) => {
+  const [filled, setFilled] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const categoryVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const,
-      },
-    },
-  };
-
-  const skillVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-      },
-    },
-  };
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setFilled(true); obs.disconnect(); } }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <section id="skills" className="py-20 px-6 bg-secondary/20">
-      <div className="container mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold text-gradient mb-4">
-            Technical Skills
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            8+ years of experience across modern web technologies, frameworks, and development tools
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="grid md:grid-cols-2 gap-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {skillCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.title}
-              className="space-y-6"
-              variants={categoryVariants}
-            >
-              <h3 className="text-2xl font-bold text-foreground mb-6 relative">
-                {category.title}
-                <motion.div
-                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-accent rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "60px" }}
-                  transition={{ duration: 0.8, delay: categoryIndex * 0.2 }}
-                  viewport={{ once: true }}
-                />
-              </h3>
-
-              <div className="space-y-6">
-                {category.skills.map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill.name}
-                    className="space-y-2"
-                    variants={skillVariants}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-foreground font-medium">
-                        {skill.name}
-                      </span>
-                      <motion.span
-                        className="text-sm text-muted-foreground font-mono"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.5 + skillIndex * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        {skill.level}%
-                      </motion.span>
-                    </div>
-
-                    <div className="relative h-3 bg-secondary rounded-full overflow-hidden">
-                      <motion.div
-                        className={`absolute inset-y-0 left-0 bg-gradient-to-r ${skill.color} rounded-full`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.3 + skillIndex * 0.1,
-                          ease: "easeOut",
-                        }}
-                        viewport={{ once: true }}
-                      />
-                      
-                      {/* Glowing effect */}
-                      <motion.div
-                        className={`absolute inset-y-0 left-0 bg-gradient-to-r ${skill.color} rounded-full opacity-50 blur-sm`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.3 + skillIndex * 0.1,
-                          ease: "easeOut",
-                        }}
-                        viewport={{ once: true }}
-                      />
-
-                      {/* Animated shine effect */}
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "200%" }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          repeatDelay: 3,
-                          ease: "easeInOut",
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Experience Summary */}
-        <motion.div
-          className="mt-20 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-gradient mb-4">
-              Full Stack Expertise
-            </h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Specialized in creating <span className="text-primary font-semibold">RESTful APIs</span>, 
-              building responsive frontends, and implementing <span className="text-accent font-semibold">scalable architectures</span>. 
-              Experienced with both monolithic and microservice approaches, including <span className="text-primary font-semibold">InertiaJS</span> for 
-              seamless full-stack development.
-            </p>
-          </div>
-        </motion.div>
+    <div ref={ref} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.55rem 0', borderBottom: '1px solid var(--border-c)' }}>
+      <span style={{ fontSize: 13, color: 'var(--ink)', minWidth: 160 }}>{name}</span>
+      <div style={{ flex: 1, height: 2, background: 'var(--border-c)', position: 'relative', overflow: 'hidden' }}>
+        <div
+          style={{
+            height: '100%',
+            background: 'var(--ink)',
+            width: filled ? `${pct}%` : '0%',
+            transition: `width 1s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
+          }}
+        />
       </div>
-    </section>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink3)', minWidth: 30, textAlign: 'right' }}>{pct}%</span>
+    </div>
   );
 };
+
+const SkillsSection = () => (
+  <section id="skills" style={{ maxWidth: '1400px', margin: '0 auto', padding: '6rem clamp(1.5rem, 6vw, 5rem)' }}>
+    {/* Header */}
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-c)' }}>
+      <div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '0.4rem' }}>Technical proficiency</div>
+        <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', color: 'var(--ink)' }}>
+          Skills
+        </motion.h2>
+      </div>
+    </div>
+
+    {/* Two-column grid */}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '4rem' }}>
+      {groups.map((g) => (
+        <div key={g.title}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-c)' }}>
+            {g.title}
+          </div>
+          {g.skills.map((s, i) => (
+            <SkillBar key={s.name} name={s.name} pct={s.pct} delay={i * 80} />
+          ))}
+        </div>
+      ))}
+    </div>
+
+    {/* Summary box */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      style={{ marginTop: '4rem', padding: '2.5rem', border: '1px solid var(--border-c)', background: 'var(--bg2)' }}
+    >
+      <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', letterSpacing: '-0.02em', color: 'var(--ink)', marginBottom: '0.75rem' }}>Full Stack Expertise</div>
+      <p style={{ fontSize: 15, color: 'var(--ink2)', lineHeight: 1.75, maxWidth: 760 }}>
+        Specialised in creating <span style={{ color: 'var(--ink)', fontWeight: 500 }}>RESTful APIs</span>,
+        building responsive frontends, and implementing <span style={{ color: 'var(--ink)', fontWeight: 500 }}>scalable architectures</span>.
+        Experienced with both monolithic and microservice approaches, including{' '}
+        <span style={{ color: 'var(--ink)', fontWeight: 500 }}>InertiaJS</span> for seamless full-stack development with Laravel and React.
+      </p>
+    </motion.div>
+  </section>
+);
 
 export default SkillsSection;

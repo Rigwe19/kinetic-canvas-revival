@@ -1,297 +1,209 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, MapPin, Clock, CheckCircle, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { useSendEmail } from '../hooks/useSendEmail';
+import { useToast } from '../hooks/use-toast';
 
 const ContactSection = () => {
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: "Email",
-      value: "contact@reinhard.dev",
-      description: "Let's discuss your project",
-      gradient: "from-blue-500 to-cyan-500"
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      value: "+1 (555) 123-4567",
-      description: "Available Mon-Fri 9AM-6PM",
-      gradient: "from-green-500 to-teal-500"
-    },
-    {
-      icon: MapPin,
-      title: "Location",
-      value: "Remote Worldwide",
-      description: "Working across timezones",
-      gradient: "from-purple-500 to-pink-500"
-    }
-  ];
+  const [sent, setSent] = useState(false);
+  const { toast } = useToast();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    projectType: '',
+    message: ''
+  });
+
+  const { sendEmail, isLoading } = useSendEmail({
+    toast: ({ title, description, status }) => {
+      toast({
+        title,
+        description,
+        // variant: status === "error" ? "destructive" : "default",
+      });
     },
+    onSuccess: () => setSent(true),
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendEmail({
+      data: formData,
+      subject: `New Project Inquiry from ${formData.firstName} ${formData.lastName}`,
+      emailTitle: "New Contact Form Submission",
+    });
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const,
-      },
-    },
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const contactItems = [
+    { icon: <Mail size={14} />, label: 'Email', value: 'contact@reinhard.name.ng' },
+    { icon: <MapPin size={14} />, label: 'Location', value: 'Remote — Worldwide' },
+    { icon: <Clock size={14} />, label: 'Response time', value: 'Within 24 hours' },
+  ];
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    background: 'var(--bg)',
+    border: '1px solid var(--border-c)',
+    padding: '10px 12px',
+    fontFamily: 'var(--font-sans)',
+    fontSize: 14,
+    color: 'var(--ink)',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-mono)',
+    fontSize: 10,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase' as const,
+    color: 'var(--ink3)',
+    marginBottom: 6,
+    display: 'block',
   };
 
   return (
-    <section id="contact" className="py-20 px-6 bg-secondary/10">
-      <div className="container mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold text-gradient mb-4">
-            Let's Work Together
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ready to bring your ideas to life? I'm here to help you build amazing digital experiences
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Left Side - Contact Info */}
-          <motion.div
-            className="space-y-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div variants={itemVariants}>
-              <h3 className="text-2xl font-bold text-foreground mb-6">
-                Get In Touch
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                I'm always excited to work on new projects and collaborate with amazing people. 
-                Whether you have a specific project in mind or just want to explore possibilities, 
-                let's start a conversation.
-              </p>
-            </motion.div>
-
-            <motion.div className="space-y-6" variants={containerVariants}>
-              {contactInfo.map((info, index) => (
-                <motion.div
-                  key={info.title}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 group">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-4">
-                        <motion.div
-                          className={`p-3 rounded-lg bg-gradient-to-r ${info.gradient} group-hover:scale-110 transition-transform duration-300`}
-                          whileHover={{ rotate: 5 }}
-                        >
-                          <info.icon className="w-5 h-5 text-white" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-foreground">{info.title}</h4>
-                          <p className="text-primary font-medium">{info.value}</p>
-                          <p className="text-sm text-muted-foreground">{info.description}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="pt-8"
-            >
-              <h4 className="text-lg font-semibold text-foreground mb-4">
-                Why Work With Me?
-              </h4>
-              <ul className="space-y-3 text-muted-foreground">
-                <motion.li
-                  className="flex items-center space-x-2"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="w-2 h-2 bg-primary rounded-full"></span>
-                  <span>8+ years of proven experience</span>
-                </motion.li>
-                <motion.li
-                  className="flex items-center space-x-2"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span>Full-stack expertise across multiple technologies</span>
-                </motion.li>
-                <motion.li
-                  className="flex items-center space-x-2"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="w-2 h-2 bg-primary rounded-full"></span>
-                  <span>Commitment to quality and timely delivery</span>
-                </motion.li>
-              </ul>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Side - Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/20 transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="text-2xl text-gradient">Send a Message</CardTitle>
-                <CardDescription>
-                  Fill out the form below and I'll get back to you within 24 hours
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <motion.div
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      First Name
-                    </label>
-                    <Input
-                      placeholder="John"
-                      className="bg-background/50 border-border/50 focus:border-primary transition-colors duration-300"
-                    />
-                  </motion.div>
-                  <motion.div
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Last Name
-                    </label>
-                    <Input
-                      placeholder="Doe"
-                      className="bg-background/50 border-border/50 focus:border-primary transition-colors duration-300"
-                    />
-                  </motion.div>
-                </div>
-
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="john@example.com"
-                    className="bg-background/50 border-border/50 focus:border-primary transition-colors duration-300"
-                  />
-                </motion.div>
-
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Subject
-                  </label>
-                  <Input
-                    placeholder="Project Inquiry"
-                    className="bg-background/50 border-border/50 focus:border-primary transition-colors duration-300"
-                  />
-                </motion.div>
-
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Message
-                  </label>
-                  <Textarea
-                    placeholder="Tell me about your project..."
-                    rows={5}
-                    className="bg-background/50 border-border/50 focus:border-primary transition-colors duration-300 resize-none"
-                  />
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Button
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 font-semibold glow-primary transition-all duration-300"
-                    size="lg"
-                  >
-                    Send Message
-                    <Send className="ml-2 w-4 h-4" />
-                  </Button>
-                </motion.div>
-              </CardContent>
-            </Card>
-          </motion.div>
+    <div style={{ background: 'var(--bg2)', borderTop: '1px solid var(--border-c)' }}>
+      <section id="contact" style={{ maxWidth: '1400px', margin: '0 auto', padding: '6rem clamp(1.5rem, 6vw, 5rem)' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-c)' }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '0.4rem' }}>Let's work together</div>
+            <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', color: 'var(--ink)' }}>
+              Contact
+            </motion.h2>
+          </div>
         </div>
 
-        {/* Call to Action */}
-        <motion.div
-          className="text-center mt-20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-8 max-w-4xl mx-auto border border-primary/20">
-            <h3 className="text-2xl font-bold text-gradient mb-4">
-              Ready to Start Your Project?
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '1px', background: 'var(--border-c)', border: '1px solid var(--border-c)' }}>
+          {/* Info panel */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            style={{ background: 'var(--bg)', padding: '3rem' }}
+          >
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.03em', lineHeight: 1.1, color: 'var(--ink)', marginBottom: '1rem' }}>
+              Got a project<br />in <em style={{ color: 'var(--ink2)' }}>mind?</em>
             </h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Let's turn your vision into reality. From concept to deployment, 
-              I'll be with you every step of the way.
+            <p style={{ fontSize: 15, color: 'var(--ink2)', lineHeight: 1.75, marginBottom: '2.5rem' }}>
+              Whether it's a new build, a complex integration, or a system that needs rescuing — I'm happy to talk.
             </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full font-semibold glow-primary"
-                onClick={() => {
-                  const contactForm = document.querySelector('input[type="email"]') as HTMLInputElement;
-                  if (contactForm) {
-                    contactForm.focus();
-                  }
-                }}
-              >
-                Get Started Today →
-              </Button>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Availability badge */}
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: '1px solid var(--border-c)', background: 'var(--bg2)', width: 'fit-content', marginBottom: '0.5rem' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4caf7d' }} />
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#4caf7d', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Open for new projects</span>
+              </div>
+
+              {contactItems.map(item => (
+                <div key={item.label}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ color: 'var(--ink3)' }}>{item.icon}</span>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: 14, color: 'var(--ink)' }}>{item.value}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ background: 'var(--bg3)', padding: '3rem' }}
+          >
+            {sent ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem', minHeight: 320 }}>
+                <CheckCircle size={40} color="#4caf7d" />
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', color: 'var(--ink)' }}>Message sent!</div>
+                <p style={{ color: 'var(--ink2)', fontSize: 14, textAlign: 'center' }}>I'll get back to you within 24 hours.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={labelStyle}>First Name</label>
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="John" required style={inputStyle}
+                      onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+                      onBlur={e => e.target.style.borderColor = 'var(--border-c)'}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Last Name</label>
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" required style={inputStyle}
+                      onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+                      onBlur={e => e.target.style.borderColor = 'var(--border-c)'}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Email</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" required style={inputStyle}
+                    onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border-c)'}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Project type</label>
+                  <input type="text" name="projectType" value={formData.projectType} onChange={handleChange} placeholder="Web app, API, Mobile app..." style={inputStyle}
+                    onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border-c)'}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Message</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell me about your project, timeline, and budget..."
+                    rows={5}
+                    required
+                    style={{ ...inputStyle, resize: 'none' }}
+                    onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border-c)'}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
+                    padding: '14px', background: 'var(--ink)', color: 'var(--bg)', border: 'none', cursor: isLoading ? 'not-allowed' : 'pointer', transition: 'opacity 0.2s', width: '100%',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                    opacity: isLoading ? 0.7 : 1
+                  }}
+                  onMouseEnter={e => !isLoading && (e.currentTarget.style.opacity = '0.85')}
+                  onMouseLeave={e => !isLoading && (e.currentTarget.style.opacity = '1')}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message →'
+                  )}
+                </button>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 };
 
