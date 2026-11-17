@@ -4,22 +4,22 @@ import { ExternalLink } from 'lucide-react';
 
 const projects = [
   {
-    name: 'All Ages by Redson',
-    url: 'https://allagesbyredson.com',
-    tech: ['PHP', 'Laravel', 'Inertia.js', 'React'],
-    desc: 'A full-featured platform built with Laravel + Inertia.js + React — seamless SPA navigation with server-side rendering benefits.',
+    name: 'Folashade Fashion',
+    url: 'https://folashadefashion.com',
+    tech: ['React Router v8', 'React Query', 'TailwindCSS'],
+    desc: 'A modern e-commerce platform for Folashade Fashion, built with React Router v8, React Query, and TailwindCSS for a seamless shopping experience.',
   },
   {
     name: 'Frontlett',
-    url: 'https://frontlett.com',
+    url: 'https://uloofstories.com',
     tech: ['PHP', 'Laravel', 'React Router v7'],
-    desc: 'Staff sharing platform connecting businesses with flexible workforce solutions. Laravel backend, React Router v7 frontend.',
+    desc: 'A dynamic storytelling platform that combines PHP, Laravel, and React Router v7 to deliver engaging narratives with interactive features.',
   },
   {
-    name: 'Where Eagles Dwell',
-    url: 'https://whereeaglesdwell.com',
+    name: 'Care Ambassadors',
+    url: 'https://careambassadors.com',
     tech: ['React'],
-    desc: 'A beautifully crafted React application with a focus on performance and user experience.',
+    desc: 'A healthcare-focused platform for managing patient care and medical records with a modern React interface.',
   },
   {
     name: 'Bammy Bestowed',
@@ -81,9 +81,21 @@ const projects = [
 // const thumbUrl = (url: string) =>
 //   `https://image.thum.io/get/width/800/crop/500/allowJPG/noanimate/${url}`;
 
-  // Using Microlink which is more robust for JS-heavy sites
-  const thumbUrl = (url: string) =>
-  `https://api.microlink.io?url=${url}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`;
+// Using Microlink which is more robust for JS-heavy sites
+const thumbUrl = (url: string) => {
+  const params = new URLSearchParams({
+    url,
+    screenshot: 'true',
+    meta: 'false',
+    embed: 'screenshot.url',
+    'viewport.width': '1280',
+    'viewport.height': '800',
+    waitUntil: 'domcontentloaded',
+    waitForSelector: '#root main',
+  });
+
+  return `https://api.microlink.io?${params.toString()}`;
+};
 const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
   const [imgState, setImgState] = useState<'loading' | 'loaded' | 'error'>('loading');
 
