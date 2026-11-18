@@ -15,8 +15,10 @@ import SkillsSection from "./components/SkillsSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
-import { Analytics } from "@vercel/analytics/next"
+// import { inject } from "@vercel/analytics/react"
+import { inject } from '@vercel/analytics';
 
+inject();
 const queryClient = new QueryClient();
 
 const Portfolio = () => {
@@ -45,7 +47,6 @@ const Portfolio = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Analytics />
       <Toaster />
       <Sonner />
       <BrowserRouter>
