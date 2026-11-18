@@ -1,104 +1,114 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
 
 const groups = [
   {
-    title: 'Backend & Frameworks',
+    title: "Backend & Frameworks",
     skills: [
-      { name: 'Laravel / PHP', pct: 98 },
-      { name: 'Inertia.js', pct: 95 },
-      { name: 'Adonis.js', pct: 92 },
-      { name: 'Ts.Ed / Express.js', pct: 90 },
-      { name: 'Node.js', pct: 88 },
-      { name: 'MySQL / PostgreSQL', pct: 93 },
-      { name: 'MongoDB', pct: 82 },
+      { name: "Laravel / PHP", pct: 98 },
+      { name: "Inertia.js", pct: 95 },
+      { name: "Adonis.js", pct: 92 },
+      { name: "Ts.Ed / Express.js", pct: 90 },
+      { name: "Node.js", pct: 88 },
+      { name: "MySQL / PostgreSQL", pct: 93 },
+      { name: "MongoDB", pct: 82 },
     ],
   },
   {
-    title: 'Frontend & Mobile',
+    title: "Frontend & Mobile",
     skills: [
-      { name: 'React / Next.js', pct: 95 },
-      { name: 'Vue.js / Nuxt', pct: 90 },
-      { name: 'TypeScript', pct: 88 },
-      { name: 'React Native', pct: 85 },
-      { name: 'Ionic', pct: 88 },
-      { name: 'Angular / Svelte', pct: 82 },
-      { name: 'Docker / CI/CD', pct: 80 },
+      { name: "React / Next.js", pct: 95 },
+      { name: "Vue.js / Nuxt", pct: 90 },
+      { name: "TypeScript", pct: 88 },
+      { name: "React Native", pct: 85 },
+      { name: "Ionic", pct: 88 },
+      { name: "Angular / Svelte", pct: 82 },
+      { name: "Docker / CI/CD", pct: 80 },
     ],
   },
 ];
 
-const SkillBar = ({ name, pct, delay }: { name: string; pct: number; delay: number }) => {
-  const [filled, setFilled] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setFilled(true); obs.disconnect(); } }, { threshold: 0.3 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
+const SkillRow = ({ name, pct, index }: { name: string; pct: number; index: number }) => {
+  const reduceMotion = useReducedMotion();
   return (
-    <div ref={ref} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.55rem 0', borderBottom: '1px solid var(--border-c)' }}>
-      <span style={{ fontSize: 13, color: 'var(--ink)', minWidth: 160 }}>{name}</span>
-      <div style={{ flex: 1, height: 2, background: 'var(--border-c)', position: 'relative', overflow: 'hidden' }}>
-        <div
-          style={{
-            height: '100%',
-            background: 'var(--ink)',
-            width: filled ? `${pct}%` : '0%',
-            transition: `width 1s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
-          }}
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-border/60 py-3 sm:grid-cols-[minmax(0,1fr)_180px_auto]">
+      <span className="text-sm text-foreground/95">{name}</span>
+      <div className="hidden h-1.5 overflow-hidden rounded-full bg-secondary/70 sm:block" aria-hidden>
+        <motion.div
+          className="h-full rounded-full bg-[linear-gradient(90deg,hsl(var(--signal)),hsl(var(--signal)/0.55))]"
+          initial={reduceMotion ? false : { width: 0 }}
+          whileInView={{ width: `${pct}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: index * 0.03, ease: [0.22, 1, 0.36, 1] }}
+          style={reduceMotion ? { width: `${pct}%` } : undefined}
         />
       </div>
-      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink3)', minWidth: 30, textAlign: 'right' }}>{pct}%</span>
+      <span className="font-meta text-[11px] tabular-nums text-muted-foreground">{pct}%</span>
     </div>
   );
 };
 
-const SkillsSection = () => (
-  <section id="skills" style={{ maxWidth: '1400px', margin: '0 auto', padding: '6rem clamp(1.5rem, 6vw, 5rem)' }}>
-    {/* Header */}
-    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-c)' }}>
-      <div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '0.4rem' }}>Technical proficiency</div>
-        <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', color: 'var(--ink)' }}>
-          Skills
-        </motion.h2>
-      </div>
-    </div>
+const SkillsSection = () => {
+  const reduceMotion = useReducedMotion();
 
-    {/* Two-column grid */}
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '4rem' }}>
-      {groups.map((g) => (
-        <div key={g.title}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-c)' }}>
-            {g.title}
+  return (
+    <section id="skills" className="scroll-mt-24 py-20 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 grid gap-4 border-b border-border/70 pb-6 sm:mb-12 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <p className="font-meta text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Technical proficiency</p>
+            <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Tools I use to ship reliable work
+            </h2>
           </div>
-          {g.skills.map((s, i) => (
-            <SkillBar key={s.name} name={s.name} pct={s.pct} delay={i * 80} />
+          <p className="max-w-sm text-sm leading-relaxed text-muted-foreground lg:text-right">
+            A practical stack across backend systems, modern frontends, mobile delivery, and deployment workflows.
+          </p>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
+          {groups.map((group, gi) => (
+            <motion.div
+              key={group.title}
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.45, delay: gi * 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-lg border border-border/80 bg-card/40 p-5 sm:p-6"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-border/70 pb-3">
+                <h3 className="font-meta text-[11px] uppercase tracking-[0.18em] text-foreground/90">{group.title}</h3>
+                <span className="font-meta text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  {group.skills.length} areas
+                </span>
+              </div>
+              <div>
+                {group.skills.map((skill, i) => (
+                  <SkillRow key={skill.name} name={skill.name} pct={skill.pct} index={i} />
+                ))}
+              </div>
+            </motion.div>
           ))}
         </div>
-      ))}
-    </div>
 
-    {/* Summary box */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      style={{ marginTop: '4rem', padding: '2.5rem', border: '1px solid var(--border-c)', background: 'var(--bg2)' }}
-    >
-      <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', letterSpacing: '-0.02em', color: 'var(--ink)', marginBottom: '0.75rem' }}>Full Stack Expertise</div>
-      <p style={{ fontSize: 15, color: 'var(--ink2)', lineHeight: 1.75, maxWidth: 760 }}>
-        Specialised in creating <span style={{ color: 'var(--ink)', fontWeight: 500 }}>RESTful APIs</span>,
-        building responsive frontends, and implementing <span style={{ color: 'var(--ink)', fontWeight: 500 }}>scalable architectures</span>.
-        Experienced with both monolithic and microservice approaches, including{' '}
-        <span style={{ color: 'var(--ink)', fontWeight: 500 }}>InertiaJS</span> for seamless full-stack development with Laravel and React.
-      </p>
-    </motion.div>
-  </section>
-);
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-8 rounded-lg border border-border/80 bg-[linear-gradient(180deg,hsl(var(--card)/0.7),hsl(var(--surface-raised)/0.45))] p-6 sm:p-7"
+        >
+          <p className="font-meta text-[10px] uppercase tracking-[0.2em] text-[hsl(var(--signal))]">Full stack expertise</p>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Specialised in creating <span className="font-medium text-foreground">RESTful APIs</span>, building responsive
+            frontends, and implementing <span className="font-medium text-foreground">scalable architectures</span>.
+            Experienced with both monolithic and microservice approaches, including{" "}
+            <span className="font-medium text-foreground">InertiaJS</span> for seamless full-stack development with
+            Laravel and React.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
 export default SkillsSection;

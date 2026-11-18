@@ -3,53 +3,31 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import Navigation    from "./components/Navigation";
-import HeroSection   from "./components/HeroSection";
-import TechMarquee   from "./components/TechMarquee";
+import Navigation from "./components/Navigation";
+import HeroSection from "./components/HeroSection";
+import TechMarquee from "./components/TechMarquee";
 import ProjectsSection from "./components/ProjectsSection";
 import MobileAppsSection from "./components/MobileAppsSection";
 import WhatsAppQRCodeSection from "./components/WhatsAppQRCodeSection";
 import ServicesSection from "./components/ServicesSection";
-import SkillsSection  from "./components/SkillsSection";
+import SkillsSection from "./components/SkillsSection";
 import ContactSection from "./components/ContactSection";
-import Footer         from "./components/Footer";
-import NotFound       from "./pages/NotFound";
-
-gsap.registerPlugin(ScrollTrigger);
+import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound";
+import { Analytics } from "@vercel/analytics/next"
 
 const queryClient = new QueryClient();
 
 const Portfolio = () => {
-  useEffect(() => {
-    // Smooth entry for all sections
-    const sections = document.querySelectorAll("section");
-    sections.forEach((section) => {
-      gsap.fromTo(
-        section,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    });
-  }, []);
-
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div className="relative min-h-screen overflow-x-clip bg-background text-foreground">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_15%_0%,hsl(var(--signal)/0.16),transparent_60%),radial-gradient(ellipse_50%_35%_at_100%_10%,hsl(var(--signal)/0.08),transparent_55%)]" />
+        <div className="absolute inset-0 bg-grid-signal opacity-40" />
+      </div>
       <Navigation />
-      <main>
+      <main id="main-content">
         <HeroSection />
         <TechMarquee />
         <ProjectsSection />
@@ -67,6 +45,7 @@ const Portfolio = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Analytics />
       <Toaster />
       <Sonner />
       <BrowserRouter>

@@ -1,164 +1,64 @@
-import { useEffect, useRef } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import { gsap } from 'gsap';
-import { MessageSquare } from 'lucide-react';
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const WhatsAppQRCodeSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const qrRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(contentRef.current, {
-        x: -50,
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        }
-      });
-
-      gsap.from(qrRef.current, {
-        scale: 0.5,
-        opacity: 0,
-        duration: 1,
-        ease: 'back.out(1.7)',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        }
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const whatsappNumber = '+2348103382000';
-  const whatsappUrl = `https://wa.me/${whatsappNumber.replace('+', '')}`;
+  const reduceMotion = useReducedMotion();
+  const whatsappNumber = "+2348103382000";
+  const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}`;
 
   return (
-    <section 
-      ref={sectionRef}
-      style={{ 
-        maxWidth: '1400px', 
-        margin: '0 auto', 
-        padding: '6rem clamp(1.5rem, 6vw, 5rem)',
-        background: 'var(--bg2)',
-        borderTop: '1px solid var(--border-c)',
-        borderBottom: '1px solid var(--border-c)'
-      }}
-    >
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '3rem'
-      }}>
-        <div ref={contentRef} style={{ flex: '1', minWidth: '300px' }}>
-          <div style={{ 
-            fontFamily: 'var(--font-mono)', 
-            fontSize: 11, 
-            letterSpacing: '0.15em', 
-            textTransform: 'uppercase', 
-            color: 'var(--accent-c)', 
-            marginBottom: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <MessageSquare size={14} /> Let's Connect
-          </div>
-          <h2 style={{ 
-            fontFamily: 'var(--font-serif)', 
-            fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
-            letterSpacing: '-0.03em', 
-            color: 'var(--ink)',
-            marginBottom: '1.5rem',
-            lineHeight: 1.1
-          }}>
-            Scan to chat on WhatsApp
-          </h2>
-          <p style={{ 
-            fontSize: '1.1rem', 
-            color: 'var(--ink2)', 
-            lineHeight: 1.6, 
-            maxWidth: '500px',
-            marginBottom: '2rem'
-          }}>
-            Have a project in mind or just want to say hi? Scan the QR code to start a conversation directly with me on WhatsApp. I'm usually quick to respond!
-          </p>
-          <a 
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 14,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              color: 'var(--ink)',
-              textDecoration: 'none',
-              padding: '1rem 2rem',
-              border: '1px solid var(--accent-c)',
-              display: 'inline-block',
-              transition: 'all 0.3s ease',
-              background: 'transparent'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'var(--accent-c)';
-              e.currentTarget.style.color = 'white';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.color = 'var(--ink)';
-            }}
-          >
-            Open in WhatsApp
-          </a>
-        </div>
-
-        <div 
-          ref={qrRef}
-          style={{ 
-            background: 'white', 
-            padding: '2rem', 
-            borderRadius: '1.5rem',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1rem'
-          }}
+    <section className="scroll-mt-24 py-20 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-xl border border-border/80 bg-[linear-gradient(135deg,hsl(var(--card)/0.95),hsl(var(--surface-raised)/0.75))] p-6 sm:p-8 lg:p-10"
         >
-          <QRCode 
-            value={whatsappUrl} 
-            size={200}
-            level="H"
-            // includeMargin={false}
-            // imageSettings={{
-            //   src: "/favicon.ico",
-            //   x: undefined,
-            //   y: undefined,
-            //   height: 40,
-            //   width: 40,
-            //   excavate: true,
-            // }}
-          />
-          <span style={{ 
-            fontFamily: 'var(--font-mono)', 
-            fontSize: 10, 
-            color: '#0e0d0b', 
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em'
-          }}>
-            {whatsappNumber}
-          </span>
-        </div>
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[hsl(var(--signal)/0.12)] blur-3xl" />
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_0.7fr] lg:gap-12">
+            <div>
+              <div className="inline-flex items-center gap-2 font-meta text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                <MessageCircle className="h-3.5 w-3.5 text-[hsl(var(--signal))]" aria-hidden />
+                Direct line
+              </div>
+              <h2 className="mt-3 max-w-2xl font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                Scan to start a WhatsApp conversation
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Have a project in mind or want to ask a question? Scan the QR code or open the link to chat directly.
+                I usually respond quickly.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[hsl(var(--signal))] px-5 py-3 font-meta text-[11px] uppercase tracking-[0.18em] text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Open WhatsApp
+                  <ArrowUpRight className="h-4 w-4" aria-hidden />
+                </a>
+                <span className="rounded-md border border-border/80 bg-background/40 px-3 py-2 font-meta text-[11px] tracking-[0.08em] text-foreground/90">
+                  {whatsappNumber}
+                </span>
+              </div>
+            </div>
+
+            <div className="mx-auto w-full max-w-xs">
+              <div className="rounded-lg border border-border/80 bg-white p-4 shadow-[0_25px_60px_-30px_rgba(0,0,0,0.6)]">
+                <div className="rounded-md bg-white p-2">
+                  <QRCode value={whatsappUrl} size={256} level="H" style={{ height: "auto", maxWidth: "100%", width: "100%" }} viewBox="0 0 256 256" />
+                </div>
+                <p className="mt-3 text-center font-meta text-[10px] uppercase tracking-[0.18em] text-zinc-600">
+                  Scan with your camera
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
