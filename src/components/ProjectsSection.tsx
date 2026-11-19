@@ -17,15 +17,15 @@ const projects = [
   },
   {
     name: "Care Ambassadors",
-    url: "https://careambassadors.com",
+    url: "https://careambassadors.co.uk",
     tech: ["React"],
     desc: "A healthcare-focused platform for managing patient care and medical records with a modern React interface.",
   },
   {
-    name: "Bammy Bestowed",
-    url: "https://bammbestowed.com",
+    name: "Timelife Documentaries",
+    url: "https://timelifedocumentaries.com/",
     tech: ["React"],
-    desc: "Polished React application with modern component architecture and optimised performance.",
+    desc: "A documentary storytelling platform that showcases life stories and experiences through a React-based web application.",
   },
   {
     name: "Wanodu Barter",
@@ -40,10 +40,10 @@ const projects = [
     desc: "Professional corporate web presence showcasing partnership offerings with clean, conversion-focused design.",
   },
   {
-    name: "HostUll",
-    url: "https://hostull.com",
-    tech: ["PHP", "Laravel", "React"],
-    desc: "Web hosting platform with PHP/Laravel backend and React frontend — domain management, billing, and hosting at scale.",
+    name: "Rizoka",
+    url: "https://rizoka.com",
+    tech: ["PHP", "Laravel", "React", "Next.js"],
+    desc: "A modern e-commerce platform built with PHP, Laravel, React, and Next.js for a seamless shopping experience.",
   },
   {
     name: "Ullweb",
@@ -77,29 +77,41 @@ const projects = [
   },
 ];
 
-const thumbUrl = (url: string) => {
-  const params = new URLSearchParams({
+const thumbSources = (url: string) => {
+  const microlink = new URLSearchParams({
     url,
     screenshot: "true",
     meta: "false",
     embed: "screenshot.url",
     "viewport.width": "1280",
     "viewport.height": "800",
-    "viewport.deviceScaleFactor": "1",
-    waitUntil: "networkidle2",
-    waitForTimeout: "2000",
     "screenshot.type": "jpeg",
     "screenshot.quality": "80",
   });
-  return `https://api.microlink.io/?${params.toString()}`;
+
+  return [
+    `https://image.thum.io/get/width/1280/crop/800/noanimate/wait/5/${url}`,
+    `https://api.microlink.io/?${microlink.toString()}`,
+  ];
 };
 
 const ProjectCard = ({ project, index }: { project: (typeof projects)[0]; index: number }) => {
   const [imgState, setImgState] = useState<"loading" | "loaded" | "error">("loading");
+  const [sourceIndex, setSourceIndex] = useState(0);
   const reduceMotion = useReducedMotion();
-  const thumbnail = thumbUrl(project.url);
+  const sources = thumbSources(project.url);
+  const thumbnail = sources[sourceIndex];
   const featured = index === 0 || index === 5 || index === 8;
   const domain = project.url.replace(/^https?:\/\//, "");
+
+  const handleImageError = () => {
+    if (sourceIndex < sources.length - 1) {
+      setSourceIndex((i) => i + 1);
+      setImgState("loading");
+    } else {
+      setImgState("error");
+    }
+  };
 
   return (
     <motion.article
@@ -131,13 +143,14 @@ const ProjectCard = ({ project, index }: { project: (typeof projects)[0]; index:
             </div>
           )}
           <img
-            key={project.url}
+            key={`${project.url}-${sourceIndex}`}
             src={thumbnail}
             alt={`${project.name} website screenshot`}
             loading="lazy"
             decoding="async"
+            referrerPolicy="no-referrer"
             onLoad={() => setImgState("loaded")}
-            onError={() => setImgState("error")}
+            onError={handleImageError}
             className={`h-full w-full object-cover transition duration-500 group-hover:scale-[1.02] ${
               imgState === "loaded" ? "opacity-100" : "opacity-0"
             } ${imgState === "error" ? "hidden" : "block"}`}
