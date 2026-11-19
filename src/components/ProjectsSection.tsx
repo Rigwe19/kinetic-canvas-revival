@@ -21,12 +21,12 @@ const projects = [
     tech: ["React"],
     desc: "A healthcare-focused platform for managing patient care and medical records with a modern React interface.",
   },
-  {
-    name: "Timelife Documentaries",
-    url: "https://timelifedocumentaries.com/",
-    tech: ["React"],
-    desc: "A documentary storytelling platform that showcases life stories and experiences through a React-based web application.",
-  },
+  // {
+  //   name: "Timelife Documentaries",
+  //   url: "https://timelifedocumentaries.com/",
+  //   tech: ["React"],
+  //   desc: "A documentary storytelling platform that showcases life stories and experiences through a React-based web application.",
+  // },
   {
     name: "Wanodu Barter",
     url: "https://wanodu.com",
